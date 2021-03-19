@@ -25,15 +25,16 @@
       label="Остаток"
       prop="count">
     </el-table-column>
-    <!-- <el-table-column
-      align="right">
-      <template slot="header" slot-scope="">
-        <el-input
-          v-model="search"
-          size="mini"
-          placeholder="Type to search"/>
+    <el-table-column
+      
+      label="Operations"
+      width="120">
+      <template slot-scope="scope">
+        <el-button type="text" size="small" @click="edit(scope)">Edit</el-button>
+        <el-button class="w3-red w3-margin-left" @click="del(scope)" type="text" size="small">Delete</el-button>
+        
       </template>
-    </el-table-column> -->
+    </el-table-column>
   </el-table>
 
 <el-drawer
@@ -52,6 +53,22 @@
    <el-button type="success" @click="append">Добавить</el-button>
   </div>  
 </el-drawer>
+<!-- -------------------- -->
+<el-drawer
+  title="Редактирование товара"
+  :visible.sync="drawer2"
+  size="70%">
+  <div v-for="(t,index) of tableData"  :key="index">
+     <div v-if="t.id===edit_id">
+        <el-input focus class="w3-margin" placeholder="штрихкод" @change="upd('cod',t.cod)" v-model="t.cod"></el-input>
+        <el-input class="w3-margin" type="textarea" placeholder="наименование" @change="upd('name',t.name)" v-model="t.name"></el-input>
+        <el-input class="w3-margin" placeholder="цена" @change="upd('price',t.price)" v-model="t.price"></el-input>
+        <el-input class="w3-margin" placeholder="количество" @change="upd('count',t.count)" v-model="t.count"></el-input>
+   <el-button type="success" @click="upd(t)">Закрыть</el-button>
+     </div>
+
+  </div>  
+</el-drawer>
   </div>  
 </template>
 
@@ -65,23 +82,40 @@ import axios from 'axios';
         tableData: [],
         search: '',
         drawer:false,
+        drawer2:false,
         cod:'451245',
         name:'Тест',
         price:'150',
-        count:'25'
+        count:'25',
+        edit_id:''
 
       }
     },
     methods: {
+      upd(f,v){
+          
+          axios.post('http://95.167.178.158/other/rest_hp.php','upd_id='+this.edit_id+'&field='+f+'&value='+v).then((response) => {
+            this.tableData = response.data;
+            console.log(response)
+          }).catch((error) => { console.log(error); });
+      },
+      del(s){
+            axios.post('http://95.167.178.158/other/rest_hp.php','del_id='+s.row.id).then((response) => {
+            this.tableData = response.data;
+            console.log(response)
+          }).catch((error) => { console.log(error); });
+      },
+      edit(s){
+        console.log(s.row.id)
+        this.edit_id=s.row.id
+        this.drawer2=true
+      },
       gettovar(){
+        //
          axios.post('http://95.167.178.158/other/rest_hp.php','getTovar=').then((response) => {
-      
-      
-      this.tableData = response.data;
-      console.log(response)
-
-
-}).catch((error) => { console.log(error); });
+            this.tableData = response.data;
+            // console.log(response)
+          }).catch((error) => { console.log(error); });
       },
       open(){
           this.drawer = true
