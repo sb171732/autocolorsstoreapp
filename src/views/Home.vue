@@ -32,7 +32,7 @@
       width="120">
       <template slot-scope="scope">
         <el-button type="text" size="small" @click="buy(scope)"><i class="el-icon-shopping-cart-2 w3-large"></i></el-button>
-        <el-button class="w3-margin-left" @click="del(scope)" type="text" size="small"><i class="el-icon-delete w3-text-red w3-large"></i></el-button>
+        
         
       </template>
     </el-table-column>
@@ -116,21 +116,31 @@ export default {
     }
   },
   methods:{
+    saveHistory(){
+      for (let t3 of this.tableData3){
+          axios.post('http://95.167.178.158/other/rest_hp.php','saveHis='+
+          '&cod='+t3.cod+'&count='+t3.count).then((response) => {
+            console.log(response)
+          }).catch((error) => { console.log(error); });    
+      }
+      this.tableData3=[]
+    },
     endshop(){
 
         for (let t of this.tableData3){
           axios.post('http://95.167.178.158/other/rest_hp.php','shopTovar_id='+t.id+'&count='+t.count).then((response) => {
-            this.tableData = response.data; this.tableData3=[];
+            this.tableData = response.data; this.saveHistory();
           }).catch((error) => { console.log(error); });
         }
         
     },
     buy(s){
        let exst_s=0
-       for (let t of this.tableData3){ if (t ===s) { exst_s=t.id }  }
+       for (let t of this.tableData3){ if (t.id ===s.row.id) { exst_s=t.id }  }
        if (exst_s!=0){ 
-          for (let t of this.tableData3){ if (t.id ===exst_s) { t.col=t.col+1 }  }
-       } else {
+          for (let t of this.tableData3){ if ((t.id ===s.row.id) && (t.count!=0)) { t.col=t.col+1;t.sum=parseInt(t.sum)+parseInt(t.price);t.count=t.count-1; }  }
+         this.sumupd()
+      } else {
 
            this.tableData3.push({ id:s.row.id,name:s.row.name,price:s.row.price,count:s.row.count-1,cod:s.row.cod,col:1,sum:s.row.price})   
        }  

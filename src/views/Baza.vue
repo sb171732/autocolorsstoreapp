@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an baza page</h1>
+    <h1>База товаров</h1>
 <el-button type="primary" @click="open">Добавить товар</el-button>
  <el-table
     :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"

@@ -11,6 +11,7 @@
   active-text-color="#ffd04b">
   <el-menu-item index="1" route="/">Продажа</el-menu-item>
   <el-menu-item index="2" route="/baza">База товаров</el-menu-item>
+  <el-menu-item index="3" route="/his">История покупок</el-menu-item>
 </el-menu>
  <el-menu v-if="$route.path==='/'"
   :default-active="activeIndex2"
@@ -22,6 +23,19 @@
   active-text-color="#ffd04b">
   <el-menu-item index="1" route="/">Продажа</el-menu-item>
   <el-menu-item index="2" route="/baza">База товаров</el-menu-item>
+  <el-menu-item index="3" route="/his">История покупок</el-menu-item>
+</el-menu>
+<el-menu v-if="$route.path==='/his'"
+  :default-active="activeIndex3"
+  class="el-menu-demo"
+  mode="horizontal"
+  @select="handleSelect"
+  background-color="#545c64"
+  text-color="#fff" router
+  active-text-color="#ffd04b">
+  <el-menu-item index="1" route="/">Продажа</el-menu-item>
+  <el-menu-item index="2" route="/baza">База товаров</el-menu-item>
+  <el-menu-item index="3" route="/his">История покупок</el-menu-item>
 </el-menu>
 <router-view></router-view>
   </div>
@@ -32,7 +46,8 @@
     data() {
       return {
         activeIndex: '1',
-        activeIndex2: '1'
+        activeIndex2: '1',
+        activeIndex3: '3',
       };
     },
     methods: {
